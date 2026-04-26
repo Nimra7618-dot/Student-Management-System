@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add Student | Student System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(120deg, #f4f6f9, #e9ecef);
+            padding-top: 80px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #1e40af, #3b82f6) !important;
+        }
+
+        .form-card {
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            background: #ffffff;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #1e40af;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            transition: 0.3s;
+            background: #1e3a8a;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-dark fixed-top shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🎓 Student System</a>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card form-card p-4">
+                    <h2 class="text-center mb-4">➕ Add Student</h2>
+                    <div id="msg"></div>
+
+                    <input type="text" id="name" class="form-control mb-2" placeholder="Full Name">
+                    <input type="text" id="aridNumber" class="form-control mb-2" placeholder="Arid Number (e.g. 26-ARID-1234)">
+                    <input type="text" id="degree" class="form-control mb-2" placeholder="Degree">
+                    <input type="text" id="cgpa" class="form-control mb-3" placeholder="CGPA">
+
+                    <button class="btn btn-primary w-100" onclick="addStudent()">Submit</button>
+                    <a href="index.html" class="btn btn-secondary w-100 mt-2">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addStudent() {
+            // Get values from inputs
+            let name = document.getElementById("name").value;
+            let aridNumber = document.getElementById("aridNumber").value;
+            let degree = document.getElementById("degree").value;
+            let cgpa = document.getElementById("cgpa").value;
+
+            // Send to server
+            fetch('/addStudent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                // Ensure the keys here match what your server expects
+                body: JSON.stringify({ 
+                    name: name, 
+                    aridNumber: aridNumber, 
+                    degree: degree, 
+                    cgpa: cgpa 
+                })
+            })
+            .then(res => res.text())
+            .then(data => {
+                console.log("SERVER RESPONSE:", data);
+                showMessage("Student added successfully!", "success");
+            })
+            .catch(err => {
+                console.log("ERROR:", err);
+                showMessage("Server error, could not add student.", "danger");
+            });
+        }
+
+        function showMessage(msg, type) {
+            let box = document.getElementById("msg");
+            box.innerHTML = `
+                <div class="alert alert-${type} text-center">
+                    ${msg}
+                </div>
+            `;
+            setTimeout(() => {
+                box.innerHTML = "";
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
